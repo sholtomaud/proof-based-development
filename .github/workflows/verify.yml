@@ -1,0 +1,114 @@
+name: Proof-Based Verification Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # Tier 1 & 2: Fail fast on types, lint, escape hatches, boundaries, unit tests,
+  # and property-based state machine proofs before spending browser compute.
+  static-and-properties:
+    name: Static, Boundaries & Property Proofs
+    runs-on: ubuntu-26.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js v26
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify package signatures
+        run: npm audit signatures
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Lint & Zero Escape Hatches
+        run: npm run lint
+
+      - name: Architectural Boundary Check
+        run: npm run arch:check
+
+      - name: Unit Tests
+        run: npm run test:unit
+
+      - name: Property-Based Invariant Proofs
+        run: npm run test:properties
+
+  get-playwright-version:
+    runs-on: ubuntu-26.04
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Get Playwright version from package.json
+        id: get-version
+        run: |
+          VERSION=$(node -p "require('./package.json').devDependencies['@playwright/test'].replace(/[\^~]/g, '')")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+  # Tier 3: Headless browser proofs (dev, production, subpath) with recorded
+  # videos, traces, and screenshots uploaded as PR review artifacts even on pass.
+  e2e-proofs:
+    name: Runtime & Visual Proofs (Playwright)
+    needs: [static-and-properties, get-playwright-version]
+    runs-on: ubuntu-26.04
+    container: mcr.microsoft.com/playwright:v${{ needs.get-playwright-version.outputs.version }}-noble
+    env:
+      # Firefox will not start unless $HOME belongs to the user running it.
+      HOME: /root
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js v26
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 26.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run Playwright E2E Proofs
+        run: npm run test:e2e
+
+      - name: Upload Playwright Proof Artifacts (Videos, Traces, HTML Report)
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: playwright-proof-artifacts
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14
+
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-26.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          fail-on-severity: high

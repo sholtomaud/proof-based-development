@@ -1,0 +1,38 @@
+<div class="min-h-[calc(100vh-4rem)] bg-[var(--boba-bg)] text-slate-900 dark:text-slate-100 py-16 px-4 sm:px-6 transition-colors duration-200">
+  <div class="max-w-2xl mx-auto">
+
+    <h1 data-testid="home-heading" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 mb-4">
+      Your app is running.
+    </h1>
+    <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+      Edit <code class="font-mono text-base">src/components/home-page/home-page.html</code> and save to see it change.
+    </p>
+
+    <div class="grid sm:grid-cols-2 gap-4 mb-10">
+      <a href="/todo" data-testid="home-todo-card" class="block bg-[var(--boba-surface)] p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
+        <h2 class="text-lg font-bold mb-1">To-Do example</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300">
+          State in a <code class="font-mono">Store</code>, a list rendered from a <code class="font-mono">&lt;template&gt;</code>, delegated events.
+        </p>
+      </a>
+      <a href="/users" data-testid="home-users-card" class="block bg-[var(--boba-surface)] p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
+        <h2 class="text-lg font-bold mb-1">Users example</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-300">
+          A service, an API call, native form validation and a route with a parameter.
+        </p>
+      </a>
+    </div>
+
+    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Next steps</h2>
+    <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
+      <li>Add a page: <code class="font-mono">npm run boba -- generate component my-page</code></li>
+      <li>Give it a URL: <code class="font-mono">npm run boba -- add route /my-page my-page</code></li>
+      <li>Delete the examples you don't need, and their routes in <code class="font-mono">src/main.ts</code>.</li>
+      <li>
+        Read the
+        <a href="https://sholtomaud.github.io/boba/docs" target="_blank" rel="noopener noreferrer" class="font-semibold underline">Boba documentation</a>.
+      </li>
+    </ul>
+
+  </div>
+</div>
