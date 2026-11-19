@@ -1,0 +1,717 @@
+{
+  "schemaVersion": 1,
+  "overallStatus": "passed",
+  "totalPassed": 88,
+  "totalFailed": 0,
+  "totalSkipped": 1,
+  "totalDurationMs": 40198,
+  "build": {
+    "commit": "0cea6e7ec0582a430e1fcb5e38897b7bef809182",
+    "shortCommit": "0cea6e7",
+    "branch": "main",
+    "generatedAt": "2026-11-19T23:33:08.043Z",
+    "nodeVersion": "v24.22.3",
+    "commitUrl": "https://github.com/sholtomaud/proof-based-development/commit/0cea6e7ec0582a430e1fcb5e38897b7bef809182",
+    "runUrl": "",
+    "repoUrl": "https://github.com/sholtomaud/proof-based-development",
+    "playwrightReportUrl": ""
+  },
+  "tiers": [
+    {
+      "tier": 1,
+      "id": "static",
+      "title": "Static & Escape Hatches",
+      "subtitle": "Strict TypeScript, zero explicit any/as/!, zero suppression directives, and code style",
+      "status": "passed",
+      "passedCount": 4,
+      "failedCount": 0,
+      "skippedCount": 0,
+      "durationMs": 2710,
+      "checks": [
+        {
+          "id": "typecheck",
+          "name": "TypeScript Strict Check",
+          "status": "passed",
+          "durationMs": 793,
+          "summary": "0 compiler errors across src/, scripts/, tests/, e2e/",
+          "command": "npm run typecheck",
+          "details": [
+            "strict: true, erasableSyntaxOnly: true, verbatimModuleSyntax: true"
+          ]
+        },
+        {
+          "id": "oxlint",
+          "name": "Oxlint (Zero Escape Hatches)",
+          "status": "passed",
+          "durationMs": 488,
+          "summary": "Found 0 warnings and 0 errors.",
+          "command": "npx oxlint --deny-warnings",
+          "details": [
+            "Bans explicit any, unsafe type assertions (as Type), non-null assertions (!), and @ts-* comments"
+          ]
+        },
+        {
+          "id": "check-rules",
+          "name": "Deterministic Rule Guard",
+          "status": "passed",
+          "durationMs": 15,
+          "summary": "0 suppression directives, 0 domain DOM leaks, 100% FeatureMap coverage",
+          "command": "node scripts/check-rules.ts",
+          "details": [
+            "no-suppression-comments: verified",
+            "no-dom-globals-in-domain: verified",
+            "e2e-must-use-feature-map: verified"
+          ]
+        },
+        {
+          "id": "prettier",
+          "name": "Prettier Code Style",
+          "status": "passed",
+          "durationMs": 1414,
+          "summary": "All source and test files formatted",
+          "command": "prettier --check \"{src,scripts,tests,e2e}/**/*.{ts,js}\"",
+          "details": [
+            "Consistent formatting enforced across src, scripts, tests, e2e"
+          ]
+        }
+      ]
+    },
+    {
+      "tier": 2,
+      "id": "architecture",
+      "title": "Architectural Boundaries",
+      "subtitle": "Strict separation of shared, domain, server, services, core, and Web Component layers",
+      "status": "passed",
+      "passedCount": 2,
+      "failedCount": 0,
+      "skippedCount": 0,
+      "durationMs": 54,
+      "checks": [
+        {
+          "id": "arch-boundaries",
+          "name": "Layer Boundary Isolation",
+          "status": "passed",
+          "durationMs": 54,
+          "summary": "20 modules, 45 import edges, 0 violations",
+          "command": "npm run arch:check",
+          "details": [
+            "no-client-to-server: 0 violations",
+            "no-node-builtins-in-client: 0 violations",
+            "pure-domain-core: 0 violations",
+            "no-assets-in-domain: 0 violations",
+            "pure-shared-contracts: 0 violations",
+            "no-server-to-ui: 0 violations",
+            "dom-free-services: 0 violations",
+            "no-cross-component-coupling: 0 violations",
+            "explicit-ts-extension: 0 violations",
+            "no-circular-dependencies: 0 violations"
+          ]
+        },
+        {
+          "id": "arch-cycles",
+          "name": "Acyclic Dependency Graph",
+          "status": "passed",
+          "durationMs": 0,
+          "summary": "0 circular dependencies detected",
+          "command": "npm run arch:check",
+          "details": [
+            "Full DFS cycle detection passed across src/"
+          ]
+        }
+      ]
+    },
+    {
+      "tier": 3,
+      "id": "properties",
+      "title": "Unit & Property-Based Proofs",
+      "subtitle": "Deterministic shrinking property tests proving formal state-machine invariants in milliseconds",
+      "status": "passed",
+      "passedCount": 51,
+      "failedCount": 0,
+      "skippedCount": 0,
+      "durationMs": 1948,
+      "checks": [
+        {
+          "id": "unit-tests",
+          "name": "Node Native Unit Tests",
+          "status": "passed",
+          "durationMs": 1408,
+          "summary": "39 passed, 0 failed",
+          "command": "npm run test:unit",
+          "details": [
+            "passes for valid layered imports",
+            "forbids domain importing UI components or core",
+            "forbids client UI importing server modules or node built-ins",
+            "forbids cross-component imports across different component folders",
+            "detects circular dependencies",
+            "requires explicit .ts extensions on relative imports",
+            "arch-check",
+            "generate component scaffolds the three files",
+            "generate component rejects invalid tag names and overwrites",
+            "generate service scaffolds a service whose test passes",
+            "add route registers after the last route",
+            "manifest lists components, services and routes",
+            "mcp serves the tools over JSON-RPC",
+            "boba CLI",
+            "passes for clean code adhering to all rules",
+            "rejects suppression directives",
+            "rejects DOM globals inside src/domain/",
+            "requires E2E specs to import FeatureMap",
+            "check-rules",
+            "parseTapOutput extracts pass, fail, skip counts, duration, and test names",
+            "parsePlaywrightJson aggregates per-project counts and media metadata",
+            "renderMarkdownSummary includes status, counts, and Pages URL",
+            "generate-proof-report helpers",
+            "matches static routes",
+            "extracts and decodes route parameters",
+            "renders the component with params and query, then emits navigate",
+            "works under a base URL",
+            "a guard can cancel or redirect a navigation",
+            "shows the notFound component for unknown routes",
+            "shows the not-found view when a component fails to load",
+            "handles clicks on in-app links only",
+            "Router",
+            "should initialize with initial state",
+            "should update state with setState",
+            "should merge state with setState",
+            "should emit change event on setState",
+            "Store",
+            "fetchProofReport returns validated ProofReport from data/proof-report.json",
+            "fetchProofReport rejects on HTTP error",
+            "fetchProofReport rejects on malformed payload",
+            "proof-report-service",
+            "fetchUsers returns the users from the API",
+            "fetchUsers rejects when the request fails",
+            "validateUser rejects duplicate names, ignoring case",
+            "user-service",
+            "passes when invariant always holds",
+            "finds and shrinks a counterexample deterministically",
+            "property testing engine"
+          ]
+        },
+        {
+          "id": "property-tests",
+          "name": "Property-Based State Machine Invariants",
+          "status": "passed",
+          "durationMs": 540,
+          "summary": "12 invariant properties verified across randomized action sequences",
+          "command": "npm run test:properties",
+          "details": [
+            "all formal invariants hold across arbitrary UI action sequences",
+            "filtering by a specific tier never returns tiers outside that selection",
+            "pass rate is bounded in [0, 100] for all non-negative passed/failed counts",
+            "media project filter always returns only matching project items",
+            "ProofDashboard state machine properties",
+            "all formal invariants hold after every transition in arbitrary action sequences",
+            "toggling any task twice restores the exact original state",
+            "clearCompleted removes all completed tasks and preserves every active task in order",
+            "adding a blank or whitespace-only task is always a no-op",
+            "adding a non-blank task then deleting its assigned id leaves task list unchanged",
+            "hydrating arbitrary untrusted storage payloads always produces a valid TodoState",
+            "TodoState machine properties",
+            "all formal invariants hold across arbitrary sequences of load and addUser actions",
+            "adding an already-existing name (ignoring case and surrounding whitespace) is always rejected",
+            "UsersState machine properties"
+          ]
+        }
+      ]
+    },
+    {
+      "tier": 4,
+      "id": "e2e",
+      "title": "Runtime & Visual Proofs (Playwright)",
+      "subtitle": "FeatureMap-driven headless browser specs with zero console/network errors and recorded videos",
+      "status": "passed",
+      "passedCount": 31,
+      "failedCount": 0,
+      "skippedCount": 1,
+      "durationMs": 35486,
+      "checks": [
+        {
+          "id": "e2e-chromium",
+          "name": "Playwright (chromium)",
+          "status": "passed",
+          "durationMs": 16647,
+          "summary": "14 passed, 0 failed, 1 skipped",
+          "command": "npx playwright test --project=chromium",
+          "details": [
+            "[passed] has title",
+            "[passed] nav links navigate without reloading and mark the current page",
+            "[passed] proof dashboard: loads 4-tier telemetry, filters tiers, and renders boundary matrix",
+            "[passed] links inside pages are handled by the router",
+            "[passed] deep links load, including nested routes with parameters",
+            "[passed] unknown routes show the not-found page",
+            "[passed] to-do list: add, complete, filter, delete and persist",
+            "[passed] users: loads from the API, validates the form, links to a profile",
+            "[passed] is installable: manifest and icons resolve",
+            "[passed] with a failing API › users: shows an error when the API fails",
+            "[skipped] offline caching › works offline after the first visit",
+            "[passed] moving a component keeps its markup and does not run init() again",
+            "[passed] a moved component re-subscribes in connected(): app-nav still follows the router",
+            "[passed] no console, page, or network errors on /",
+            "[passed] no console, page, or network errors on /user/Ada"
+          ]
+        },
+        {
+          "id": "e2e-production",
+          "name": "Playwright (production)",
+          "status": "passed",
+          "durationMs": 16478,
+          "summary": "15 passed, 0 failed, 0 skipped",
+          "command": "npx playwright test --project=production",
+          "details": [
+            "[passed] has title",
+            "[passed] nav links navigate without reloading and mark the current page",
+            "[passed] proof dashboard: loads 4-tier telemetry, filters tiers, and renders boundary matrix",
+            "[passed] links inside pages are handled by the router",
+            "[passed] deep links load, including nested routes with parameters",
+            "[passed] unknown routes show the not-found page",
+            "[passed] to-do list: add, complete, filter, delete and persist",
+            "[passed] users: loads from the API, validates the form, links to a profile",
+            "[passed] is installable: manifest and icons resolve",
+            "[passed] with a failing API › users: shows an error when the API fails",
+            "[passed] offline caching › works offline after the first visit",
+            "[passed] moving a component keeps its markup and does not run init() again",
+            "[passed] a moved component re-subscribes in connected(): app-nav still follows the router",
+            "[passed] no console, page, or network errors on /",
+            "[passed] no console, page, or network errors on /user/Ada"
+          ]
+        },
+        {
+          "id": "e2e-subpath",
+          "name": "Playwright (subpath)",
+          "status": "passed",
+          "durationMs": 2361,
+          "summary": "2 passed, 0 failed, 0 skipped",
+          "command": "npx playwright test --project=subpath",
+          "details": [
+            "[passed] the app works when served from a sub-path",
+            "[passed] nested deep links load under a sub-path"
+          ]
+        }
+      ]
+    }
+  ],
+  "architecture": {
+    "totalModules": 20,
+    "totalEdges": 45,
+    "cycles": 0,
+    "violations": 0,
+    "layers": [
+      {
+        "layer": "shared",
+        "directory": "src/shared/",
+        "purpose": "Pure domain types and runtime type guards",
+        "allowedImports": "src/shared/ only",
+        "moduleCount": 2,
+        "edgeCount": 1
+      },
+      {
+        "layer": "domain",
+        "directory": "src/domain/",
+        "purpose": "Pure, framework-agnostic state machines & formal invariants",
+        "allowedImports": "src/domain/, src/shared/ (zero DOM globals)",
+        "moduleCount": 3,
+        "edgeCount": 3
+      },
+      {
+        "layer": "server",
+        "directory": "src/server/",
+        "purpose": "Isolated backend handlers & server-only logic",
+        "allowedImports": "src/server/, src/domain/, src/shared/, node:*",
+        "moduleCount": 1,
+        "edgeCount": 2
+      },
+      {
+        "layer": "services",
+        "directory": "src/services/",
+        "purpose": "DOM-free client I/O adapters (fetch)",
+        "allowedImports": "src/services/, src/domain/, src/shared/",
+        "moduleCount": 2,
+        "edgeCount": 3
+      },
+      {
+        "layer": "core",
+        "directory": "src/core/",
+        "purpose": "Boba primitives (BaseComponent, Store, Router)",
+        "allowedImports": "src/core/ (router lazy-loads route components)",
+        "moduleCount": 3,
+        "edgeCount": 0
+      },
+      {
+        "layer": "components",
+        "directory": "src/components/",
+        "purpose": "Boba Web Components (.ts, .html, .css)",
+        "allowedImports": "src/core/, src/domain/, src/services/, src/shared/, own ?raw assets",
+        "moduleCount": 7,
+        "edgeCount": 34
+      }
+    ],
+    "rules": [
+      "no-client-to-server",
+      "no-node-builtins-in-client",
+      "pure-domain-core",
+      "no-assets-in-domain",
+      "pure-shared-contracts",
+      "no-server-to-ui",
+      "dom-free-services",
+      "no-cross-component-coupling",
+      "explicit-ts-extension",
+      "no-circular-dependencies"
+    ]
+  },
+  "e2eMedia": [
+    {
+      "id": "chromium-has-title-1",
+      "title": "has title",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1511,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-has-title-2",
+      "title": "has title",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 891,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-nav-links-navigate-without-reloading-and-mark-the-current-page-3",
+      "title": "nav links navigate without reloading and mark the current page",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1647,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-nav-links-navigate-without-reloading-and-mark-the-current-page-4",
+      "title": "nav links navigate without reloading and mark the current page",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1475,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-proof-dashboard-loads-4-tier-telemetry-filters-tiers-and-renders-boundary-matrix-5",
+      "title": "proof dashboard: loads 4-tier telemetry, filters tiers, and renders boundary matrix",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1413,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-proof-dashboard-loads-4-tier-telemetry-filters-tiers-and-renders-boundary-matrix-6",
+      "title": "proof dashboard: loads 4-tier telemetry, filters tiers, and renders boundary matrix",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1287,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-links-inside-pages-are-handled-by-the-router-7",
+      "title": "links inside pages are handled by the router",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1003,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-links-inside-pages-are-handled-by-the-router-8",
+      "title": "links inside pages are handled by the router",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1048,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-deep-links-load-including-nested-routes-with-parameters-9",
+      "title": "deep links load, including nested routes with parameters",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1046,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-deep-links-load-including-nested-routes-with-parameters-10",
+      "title": "deep links load, including nested routes with parameters",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 966,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-unknown-routes-show-the-not-found-page-11",
+      "title": "unknown routes show the not-found page",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 946,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-unknown-routes-show-the-not-found-page-12",
+      "title": "unknown routes show the not-found page",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 907,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-to-do-list-add-complete-filter-delete-and-persist-13",
+      "title": "to-do list: add, complete, filter, delete and persist",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1654,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-to-do-list-add-complete-filter-delete-and-persist-14",
+      "title": "to-do list: add, complete, filter, delete and persist",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1606,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-users-loads-from-the-api-validates-the-form-links-to-a-profile-15",
+      "title": "users: loads from the API, validates the form, links to a profile",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1326,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-users-loads-from-the-api-validates-the-form-links-to-a-profile-16",
+      "title": "users: loads from the API, validates the form, links to a profile",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1328,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-is-installable-manifest-and-icons-resolve-17",
+      "title": "is installable: manifest and icons resolve",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 900,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-is-installable-manifest-and-icons-resolve-18",
+      "title": "is installable: manifest and icons resolve",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 823,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-with-a-failing-api-users-shows-an-error-when-the-api-fails-19",
+      "title": "with a failing API › users: shows an error when the API fails",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 866,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-with-a-failing-api-users-shows-an-error-when-the-api-fails-20",
+      "title": "with a failing API › users: shows an error when the API fails",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 699,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-offline-caching-works-offline-after-the-first-visit-21",
+      "title": "offline caching › works offline after the first visit",
+      "project": "chromium",
+      "file": "app.spec.ts",
+      "status": "skipped",
+      "durationMs": 390,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-offline-caching-works-offline-after-the-first-visit-22",
+      "title": "offline caching › works offline after the first visit",
+      "project": "production",
+      "file": "app.spec.ts",
+      "status": "passed",
+      "durationMs": 1345,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-moving-a-component-keeps-its-markup-and-does-not-run-init-again-23",
+      "title": "moving a component keeps its markup and does not run init() again",
+      "project": "chromium",
+      "file": "base-component.spec.ts",
+      "status": "passed",
+      "durationMs": 800,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-moving-a-component-keeps-its-markup-and-does-not-run-init-again-24",
+      "title": "moving a component keeps its markup and does not run init() again",
+      "project": "production",
+      "file": "base-component.spec.ts",
+      "status": "passed",
+      "durationMs": 862,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-a-moved-component-re-subscribes-in-connected-app-nav-still-follows-the-router-25",
+      "title": "a moved component re-subscribes in connected(): app-nav still follows the router",
+      "project": "chromium",
+      "file": "base-component.spec.ts",
+      "status": "passed",
+      "durationMs": 945,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-a-moved-component-re-subscribes-in-connected-app-nav-still-follows-the-router-26",
+      "title": "a moved component re-subscribes in connected(): app-nav still follows the router",
+      "project": "production",
+      "file": "base-component.spec.ts",
+      "status": "passed",
+      "durationMs": 982,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-no-console-page-or-network-errors-on-27",
+      "title": "no console, page, or network errors on /",
+      "project": "chromium",
+      "file": "script-load.spec.ts",
+      "status": "passed",
+      "durationMs": 1168,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-no-console-page-or-network-errors-on-28",
+      "title": "no console, page, or network errors on /",
+      "project": "production",
+      "file": "script-load.spec.ts",
+      "status": "passed",
+      "durationMs": 1184,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "chromium-no-console-page-or-network-errors-on-user-ada-29",
+      "title": "no console, page, or network errors on /user/Ada",
+      "project": "chromium",
+      "file": "script-load.spec.ts",
+      "status": "passed",
+      "durationMs": 1032,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "production-no-console-page-or-network-errors-on-user-ada-30",
+      "title": "no console, page, or network errors on /user/Ada",
+      "project": "production",
+      "file": "script-load.spec.ts",
+      "status": "passed",
+      "durationMs": 1075,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "subpath-the-app-works-when-served-from-a-sub-path-31",
+      "title": "the app works when served from a sub-path",
+      "project": "subpath",
+      "file": "subpath.spec.ts",
+      "status": "passed",
+      "durationMs": 1116,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    },
+    {
+      "id": "subpath-nested-deep-links-load-under-a-sub-path-32",
+      "title": "nested deep links load under a sub-path",
+      "project": "subpath",
+      "file": "subpath.spec.ts",
+      "status": "passed",
+      "durationMs": 1245,
+      "videoPath": "",
+      "screenshotPath": "",
+      "tracePath": ""
+    }
+  ]
+}

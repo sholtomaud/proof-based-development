@@ -1,38 +1,90 @@
-<div class="min-h-[calc(100vh-4rem)] bg-[var(--boba-bg)] text-slate-900 dark:text-slate-100 py-16 px-4 sm:px-6 transition-colors duration-200">
-  <div class="max-w-2xl mx-auto">
+<div class="min-h-[calc(100vh-4rem)] bg-[var(--boba-bg)] text-slate-900 dark:text-slate-100 py-14 px-4 sm:px-6 transition-colors duration-200">
+  <div class="max-w-4xl mx-auto space-y-10">
 
-    <h1 data-testid="home-heading" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 mb-4">
-      Your app is running.
-    </h1>
-    <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
-      Edit <code class="font-mono text-base">src/components/home-page/home-page.html</code> and save to see it change.
-    </p>
+    <!-- Hero -->
+    <section class="space-y-4">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span
+          data-testid="home-proof-badge"
+          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+        >
+          Checking proofs…
+        </span>
+        <span data-testid="home-proof-meta" class="text-xs font-mono text-slate-500 dark:text-slate-400"></span>
+      </div>
 
-    <div class="grid sm:grid-cols-2 gap-4 mb-10">
-      <a href="/todo" data-testid="home-todo-card" class="block bg-[var(--boba-surface)] p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
-        <h2 class="text-lg font-bold mb-1">To-Do example</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300">
-          State in a <code class="font-mono">Store</code>, a list rendered from a <code class="font-mono">&lt;template&gt;</code>, delegated events.
-        </p>
-      </a>
-      <a href="/users" data-testid="home-users-card" class="block bg-[var(--boba-surface)] p-6 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
-        <h2 class="text-lg font-bold mb-1">Users example</h2>
-        <p class="text-sm text-slate-600 dark:text-slate-300">
-          A service, an API call, native form validation and a route with a parameter.
-        </p>
-      </a>
-    </div>
+      <h1 data-testid="home-heading" class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50">
+        Proof- &amp; Constraint-Driven Boba
+      </h1>
+      <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl">
+        A minimalist Web Components application where every commit must pass a deterministic 4-tier verification pipeline: strict types &amp; zero escape hatches, architectural boundaries, property-based state-machine proofs, and Playwright runtime videos.
+      </p>
 
-    <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Next steps</h2>
-    <ul class="space-y-2 text-sm text-slate-600 dark:text-slate-300">
-      <li>Add a page: <code class="font-mono">npm run boba -- generate component my-page</code></li>
-      <li>Give it a URL: <code class="font-mono">npm run boba -- add route /my-page my-page</code></li>
-      <li>Delete the examples you don't need, and their routes in <code class="font-mono">src/main.ts</code>.</li>
-      <li>
-        Read the
-        <a href="https://sholtomaud.github.io/boba/docs" target="_blank" rel="noopener noreferrer" class="font-semibold underline">Boba documentation</a>.
-      </li>
-    </ul>
+      <div class="flex flex-wrap items-center gap-3 pt-2">
+        <a
+          href="/proofs"
+          data-testid="home-proofs-cta"
+          class="inline-flex items-center px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 text-white dark:text-slate-900 text-sm font-semibold shadow-sm transition-colors"
+        >
+          Inspect Full Proof Report
+        </a>
+        <a
+          data-testid="home-playwright-report-link"
+          href="#"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hidden inline-flex items-center px-4 py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+        >
+          Playwright HTML Report
+        </a>
+      </div>
+    </section>
+
+    <!-- Live 4-Tier Summary Grid -->
+    <section class="grid sm:grid-cols-2 gap-4" data-testid="home-tier-summary-grid"></section>
+
+    <!-- Interactive Verified Demos -->
+    <section class="space-y-3">
+      <h2 class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        Verified Boba Routes &amp; State Machines
+      </h2>
+      <div class="grid sm:grid-cols-3 gap-4">
+        <a href="/proofs" data-testid="home-proofs-card" class="block bg-[var(--boba-surface)] p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
+          <h3 class="text-base font-bold mb-1">Proof Report</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            All 4 verification tiers, boundary matrix, property proofs, and playable Playwright videos.
+          </p>
+        </a>
+        <a href="/todo" data-testid="home-todo-card" class="block bg-[var(--boba-surface)] p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
+          <h3 class="text-base font-bold mb-1">To-Do State Machine</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Pure reducer in <code class="font-mono text-xs">src/domain/todo-machine.ts</code> verified across 300+ random action sequences.
+          </p>
+        </a>
+        <a href="/users" data-testid="home-users-card" class="block bg-[var(--boba-surface)] p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm">
+          <h3 class="text-base font-bold mb-1">Users State Machine</h3>
+          <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Runtime-validated API service, uniqueness invariants, native form validation, and route params.
+          </p>
+        </a>
+      </div>
+    </section>
 
   </div>
 </div>
+
+<template id="home-tier-card-template">
+  <a
+    href="/proofs"
+    data-testid="home-tier-card"
+    class="block bg-[var(--boba-surface)] p-5 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-600 transition-colors shadow-sm"
+  >
+    <div class="flex items-center justify-between gap-2 mb-2">
+      <span class="home-tier-num text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400"></span>
+      <span class="home-tier-status text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full"></span>
+    </div>
+    <h3 class="home-tier-title text-base font-bold mb-1"></h3>
+    <p class="home-tier-subtitle text-xs text-slate-600 dark:text-slate-400 mb-3"></p>
+    <p class="home-tier-counts text-xs font-mono font-semibold text-slate-800 dark:text-slate-200"></p>
+  </a>
+</template>

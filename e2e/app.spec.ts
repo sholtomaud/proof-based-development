@@ -17,6 +17,11 @@ test('nav links navigate without reloading and mark the current page', async ({
 
   const destinations = [
     {
+      selector: FeatureMap.shell.navProofsLink,
+      path: FeatureMap.proofs.route,
+      tag: FeatureMap.proofs.component,
+    },
+    {
       selector: FeatureMap.shell.navTodoLink,
       path: FeatureMap.todo.route,
       tag: FeatureMap.todo.component,
@@ -48,6 +53,28 @@ test('nav links navigate without reloading and mark the current page', async ({
       `${FeatureMap.shell.routerOutlet} > ${FeatureMap.todo.component}`
     )
   ).toBeVisible();
+});
+
+test('proof dashboard: loads 4-tier telemetry, filters tiers, and renders boundary matrix', async ({
+  page,
+}) => {
+  await page.goto(FeatureMap.home.route);
+  await expect(page.locator(FeatureMap.home.tierCard)).toHaveCount(4);
+
+  await page.locator(FeatureMap.home.proofsCta).click();
+  await expect(page).toHaveURL(FeatureMap.proofs.route);
+  await expect(page.locator(FeatureMap.proofs.heading)).toBeVisible();
+  await expect(page.locator(FeatureMap.proofs.tierCard)).toHaveCount(4);
+  await expect(page.locator(FeatureMap.proofs.archRows)).toHaveCount(6);
+
+  await page.locator(FeatureMap.proofs.tierArchitecture).click();
+  await expect(page.locator(FeatureMap.proofs.tierCard)).toHaveCount(1);
+
+  await page.locator(FeatureMap.proofs.tierAll).click();
+  await expect(page.locator(FeatureMap.proofs.tierCard)).toHaveCount(4);
+
+  await page.fill(FeatureMap.proofs.searchInput, 'Oxlint');
+  await expect(page.locator(FeatureMap.proofs.tierCard)).toHaveCount(1);
 });
 
 test('links inside pages are handled by the router', async ({ page }) => {

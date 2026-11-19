@@ -5,6 +5,7 @@ import './components/nav-page/nav-page.ts';
 const router = Router.getInstance();
 router.notFound = 'not-found-page';
 router.registerRoute({ path: '/', component: 'home-page' });
+router.registerRoute({ path: '/proofs', component: 'proofs-page' });
 router.registerRoute({ path: '/todo', component: 'todo-page' });
 router.registerRoute({ path: '/users', component: 'users-page' });
 router.registerRoute({ path: '/user/:name', component: 'user-page' });

@@ -199,10 +199,31 @@ function detectCycles(
   return cycles;
 }
 
-export function checkArchitecture(root: string): ArchViolation[] {
+export interface ArchitectureAnalysis {
+  readonly violations: readonly ArchViolation[];
+  readonly totalModules: number;
+  readonly totalEdges: number;
+  readonly cycles: readonly string[][];
+  readonly layerStats: ReadonlyMap<
+    string,
+    { readonly modules: number; readonly edges: number }
+  >;
+  readonly ruleNames: readonly string[];
+}
+
+function classifyLayer(fileRel: string): string {
+  const parts = fileRel.split('/');
+  if (parts[0] === 'src' && parts.length >= 3) {
+    return parts[1];
+  }
+  return 'root';
+}
+
+export function analyzeArchitecture(root: string): ArchitectureAnalysis {
   const violations: ArchViolation[] = [];
   const srcFiles = collectSourceFiles(path.join(root, 'src'));
   const adjacency = new Map<string, string[]>();
+  const layerCounts = new Map<string, { modules: number; edges: number }>();
 
   for (const fileAbs of srcFiles) {
     const fileRel = toPosix(path.relative(root, fileAbs));
@@ -273,10 +294,17 @@ export function checkArchitecture(root: string): ArchViolation[] {
 
     if (!isTestFile) {
       adjacency.set(fileRel, edges);
+      const layer = classifyLayer(fileRel);
+      const current = layerCounts.get(layer) ?? { modules: 0, edges: 0 };
+      layerCounts.set(layer, {
+        modules: current.modules + 1,
+        edges: current.edges + edges.length,
+      });
     }
   }
 
-  for (const cycle of detectCycles(adjacency)) {
+  const cycles = detectCycles(adjacency);
+  for (const cycle of cycles) {
     violations.push({
       rule: 'no-circular-dependencies',
       file: cycle[0],
@@ -287,7 +315,27 @@ export function checkArchitecture(root: string): ArchViolation[] {
     });
   }
 
-  return violations;
+  let totalEdges = 0;
+  for (const list of adjacency.values()) {
+    totalEdges += list.length;
+  }
+
+  return {
+    violations,
+    totalModules: adjacency.size,
+    totalEdges,
+    cycles,
+    layerStats: layerCounts,
+    ruleNames: [
+      ...BOUNDARY_RULES.map((rule) => rule.name),
+      'explicit-ts-extension',
+      'no-circular-dependencies',
+    ],
+  };
+}
+
+export function checkArchitecture(root: string): ArchViolation[] {
+  return [...analyzeArchitecture(root).violations];
 }
 
 if (import.meta.main) {

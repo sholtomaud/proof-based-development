@@ -20,6 +20,7 @@
     "test:properties": "node --test \"tests/properties/**/*.test.ts\"",
     "test": "npm run test:unit && npm run test:properties",
     "test:e2e": "playwright test",
+    "report": "node scripts/generate-proof-report.ts",
     "verify:static": "npm run typecheck && npm run lint && npm run arch:check && npm run test:unit && npm run test:properties",
     "verify": "npm run verify:static && npm run test:e2e"
   },

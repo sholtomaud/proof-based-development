@@ -75,7 +75,11 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: [
+    ['list'],
+    ['html', { open: 'never' }],
+    ['json', { outputFile: 'test-results/playwright-results.json' }],
+  ],
   use: {
     baseURL: 'http://localhost:5173',
     // Always record proof artifacts (video, trace, screenshot) even on passing runs.

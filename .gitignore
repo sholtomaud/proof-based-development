@@ -5,6 +5,7 @@ dist-subpath/
 # Test output
 playwright-report/
 test-results/
+public/proof-media/
 
 # Local configuration
 .env
