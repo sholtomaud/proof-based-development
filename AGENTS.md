@@ -49,10 +49,17 @@ Whenever a bug escapes or a review correction is made, do not add a note to mark
 - `.oxlintrc.json` / `tsconfig.json` (compiler/linter rule)
 - `tests/properties/*.prop.test.ts` (domain invariant property test)
 
+## 5. Never Tamper With Locked Tests or Verification Harness
+
+- `proof-lock.json` pins SHA-256 digests of every verification harness file (Zone A), every existing test/spec file (Zone B), and monotonic metric floors (Zone C).
+- **Adding new test files** is encouraged and passes `npm run proof:check` automatically.
+- **Modifying or deleting existing locked tests or harness files** is blocked locally and in CI (where PRs are verified against `origin/main:proof-lock.json`, which cannot be forged from inside a PR). Only a human maintainer can authorize intentional spec/harness updates via `.github/CODEOWNERS` review + PR labels (`allow-test-change` / `allow-harness-change`), then re-sealing with `npm run proof:lock` and recording a hash-chained attestation in `PROOF_CHANGELOG.md` via `npm run proof:attest`.
+- Never add `.only(...)` or unconditional `.skip(...)` directives to any test file.
+
 ## Feature Implementation Workflow
 
 1. Model types/guards in `src/shared/` and pure state transitions + invariants in `src/domain/`.
-2. Add property-based tests in `tests/properties/` proving all invariants across arbitrary sequences.
+2. Add new property-based tests in `tests/properties/` proving all invariants across arbitrary sequences.
 3. Wire the Boba component (`src/components/<tag>/`), route (`src/main.ts`), and `data-testid` hooks.
-4. Update `tests/feature-map.ts` and add Playwright proof tests in `e2e/`.
-5. Run `npm run verify` until every tier passes with zero warnings and recorded video/trace proof artifacts.
+4. Update `tests/feature-map.ts` (when adding new routes/controls) and add Playwright proof tests in `e2e/`.
+5. Run `npm run verify` until every tier passes with zero warnings, an intact cryptographic seal, and recorded video/trace proof artifacts.

@@ -1,0 +1,13 @@
+# Protected verification harness, cryptographic lockfile, proof ledger, and test suites.
+# Changes to any of these paths require explicit human repository-owner review.
+/proof-lock.json        @sholtomaud
+/PROOF_CHANGELOG.md     @sholtomaud
+/.github/               @sholtomaud
+/.oxlintrc.json         @sholtomaud
+/tsconfig.json          @sholtomaud
+/playwright.config.js   @sholtomaud
+/package.json           @sholtomaud
+/scripts/               @sholtomaud
+/tests/                 @sholtomaud
+/e2e/                   @sholtomaud
+/**/*.test.ts           @sholtomaud

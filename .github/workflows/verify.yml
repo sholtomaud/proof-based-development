@@ -10,10 +10,10 @@ permissions:
   contents: read
 
 jobs:
-  # Tier 1, 2 & 3: Fail fast on types, lint, escape hatches, boundaries,
-  # unit tests, and property-based state machine proofs before browser compute.
+  # Tier 0, 1, 2 & 3: Fail fast on cryptographic proof-lock tamper detection,
+  # types, lint, escape hatches, boundaries, unit tests, and property proofs.
   static-and-properties:
-    name: Static, Boundaries & Property Proofs
+    name: Integrity Seal, Static, Boundaries & Property Proofs
     runs-on: ubuntu-26.04
     steps:
       - name: Checkout code
@@ -32,6 +32,28 @@ jobs:
 
       - name: Verify package signatures
         run: npm audit signatures
+
+      - name: Cryptographic Proof Lock & Changelog Chain Check
+        run: npm run proof:check
+
+      # Out-of-band PR tamper gate: compares the PR working tree against the
+      # trusted base branch's proof-lock.json so an agent cannot forge or
+      # regenerate proof-lock.json to hide test or harness edits.
+      - name: PR Base-Branch Tamper Gate (vs origin/${{ github.base_ref }})
+        if: github.event_name == 'pull_request'
+        env:
+          PR_LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          FLAGS=""
+          if node -e "const labels = JSON.parse(process.env.PR_LABELS || '[]'); process.exit(labels.includes('allow-test-change') ? 0 : 1)"; then
+            FLAGS="$FLAGS --allow-test-change"
+          fi
+          if node -e "const labels = JSON.parse(process.env.PR_LABELS || '[]'); process.exit(labels.includes('allow-harness-change') ? 0 : 1)"; then
+            FLAGS="$FLAGS --allow-harness-change"
+          fi
+          node scripts/proof-lock.ts --verify-pr-base "origin/$BASE_REF" $FLAGS
 
       - name: Typecheck
         run: npm run typecheck
@@ -65,7 +87,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
   # Tier 4: Headless browser proofs (dev, production, Firefox, WebKit, subpath),
-  # proof report generation, artifact upload, and GitHub Pages site bundle.
+  # proof report generation, metric-floor ratchet check, artifact upload, and Pages bundle.
   e2e-proofs:
     name: Runtime & Visual Proofs (Playwright)
     needs: [static-and-properties, get-playwright-version]
@@ -103,6 +125,9 @@ jobs:
             --playwright-report-url playwright-report/index.html \
             --summary-file "$GITHUB_STEP_SUMMARY" \
             --pages-url "$PAGES_URL"
+
+      - name: Verify Monotonic Metric Floors & Skip Ceiling
+        run: node scripts/proof-lock.ts --verify-metrics public/data/proof-report.json
 
       - name: Upload Playwright Proof Artifacts (Videos, Traces, HTML Report)
         if: always()

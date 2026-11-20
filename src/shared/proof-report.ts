@@ -11,6 +11,9 @@ export const PROOF_TIER_IDS = [
 ] as const;
 export type ProofTierId = (typeof PROOF_TIER_IDS)[number];
 
+export const PROOF_LOCK_ZONES = ['harness', 'tests'] as const;
+export type ProofLockZone = (typeof PROOF_LOCK_ZONES)[number];
+
 export interface ProofBuildInfo {
   readonly commit: string;
   readonly shortCommit: string;
@@ -76,6 +79,41 @@ export interface ProofE2EMediaItem {
   readonly tracePath: string;
 }
 
+export interface LockedFileEntry {
+  readonly path: string;
+  readonly zone: ProofLockZone;
+  readonly sha256: string;
+}
+
+export interface MetricFloors {
+  readonly minUnitTests: number;
+  readonly minPropertyTests: number;
+  readonly minE2ETests: number;
+  readonly minArchRules: number;
+  readonly maxSkippedTests: number;
+}
+
+export interface ProofChangelogEntry {
+  readonly commit: string;
+  readonly timestamp: string;
+  readonly rootSha256: string;
+  readonly summary: string;
+  readonly verdict: string;
+  readonly previousAttestation: string;
+  readonly attestationSha256: string;
+}
+
+export interface ProofIntegrityReport {
+  readonly status: 'intact' | 'tampered';
+  readonly rootSha256: string;
+  readonly harnessFileCount: number;
+  readonly testFileCount: number;
+  readonly metricFloors: MetricFloors;
+  readonly lockedFiles: readonly LockedFileEntry[];
+  readonly changelogChainValid: boolean;
+  readonly changelogEntries: readonly ProofChangelogEntry[];
+}
+
 export interface ProofReport {
   readonly schemaVersion: 1;
   readonly overallStatus: ProofStatus;
@@ -87,6 +125,7 @@ export interface ProofReport {
   readonly tiers: readonly ProofTier[];
   readonly architecture: ArchitectureReport;
   readonly e2eMedia: readonly ProofE2EMediaItem[];
+  readonly integrity: ProofIntegrityReport;
 }
 
 export function isProofStatus(value: unknown): value is ProofStatus {
@@ -98,6 +137,12 @@ export function isProofStatus(value: unknown): value is ProofStatus {
 
 export function isProofTierId(value: unknown): value is ProofTierId {
   return typeof value === 'string' && PROOF_TIER_IDS.some((id) => id === value);
+}
+
+export function isProofLockZone(value: unknown): value is ProofLockZone {
+  return (
+    typeof value === 'string' && PROOF_LOCK_ZONES.some((zone) => zone === value)
+  );
 }
 
 function isStringArray(value: unknown): value is readonly string[] {
@@ -199,6 +244,57 @@ function isProofE2EMediaItem(value: unknown): value is ProofE2EMediaItem {
   );
 }
 
+export function isLockedFileEntry(value: unknown): value is LockedFileEntry {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.path === 'string' &&
+    isProofLockZone(value.zone) &&
+    typeof value.sha256 === 'string'
+  );
+}
+
+export function isMetricFloors(value: unknown): value is MetricFloors {
+  if (!isRecord(value)) return false;
+  return (
+    isNonNegativeNumber(value.minUnitTests) &&
+    isNonNegativeNumber(value.minPropertyTests) &&
+    isNonNegativeNumber(value.minE2ETests) &&
+    isNonNegativeNumber(value.minArchRules) &&
+    isNonNegativeNumber(value.maxSkippedTests)
+  );
+}
+
+export function isProofChangelogEntry(
+  value: unknown
+): value is ProofChangelogEntry {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.commit === 'string' &&
+    typeof value.timestamp === 'string' &&
+    typeof value.rootSha256 === 'string' &&
+    typeof value.summary === 'string' &&
+    typeof value.verdict === 'string' &&
+    typeof value.previousAttestation === 'string' &&
+    typeof value.attestationSha256 === 'string'
+  );
+}
+
+function isProofIntegrityReport(value: unknown): value is ProofIntegrityReport {
+  if (!isRecord(value)) return false;
+  return (
+    (value.status === 'intact' || value.status === 'tampered') &&
+    typeof value.rootSha256 === 'string' &&
+    isNonNegativeNumber(value.harnessFileCount) &&
+    isNonNegativeNumber(value.testFileCount) &&
+    isMetricFloors(value.metricFloors) &&
+    Array.isArray(value.lockedFiles) &&
+    value.lockedFiles.every(isLockedFileEntry) &&
+    typeof value.changelogChainValid === 'boolean' &&
+    Array.isArray(value.changelogEntries) &&
+    value.changelogEntries.every(isProofChangelogEntry)
+  );
+}
+
 export function isProofReport(value: unknown): value is ProofReport {
   if (!isRecord(value)) return false;
   return (
@@ -213,6 +309,7 @@ export function isProofReport(value: unknown): value is ProofReport {
     value.tiers.every(isProofTier) &&
     isArchitectureReport(value.architecture) &&
     Array.isArray(value.e2eMedia) &&
-    value.e2eMedia.every(isProofE2EMediaItem)
+    value.e2eMedia.every(isProofE2EMediaItem) &&
+    isProofIntegrityReport(value.integrity)
   );
 }

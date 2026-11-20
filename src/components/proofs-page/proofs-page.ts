@@ -133,6 +133,7 @@ export class ProofsPageComponent extends BaseComponent {
     this.renderHeader(state.report);
     this.renderTiers(state);
     this.renderArchitecture(state.report);
+    this.renderIntegrity(state.report);
     this.renderMediaGallery(state);
   }
 
@@ -331,6 +332,119 @@ export class ProofsPageComponent extends BaseComponent {
       return tr;
     });
     tbody.replaceChildren(...rows);
+  }
+
+  private renderIntegrity(report: ProofReport): void {
+    const { integrity } = report;
+    const intact =
+      integrity.status === 'intact' && integrity.changelogChainValid;
+
+    const sealBadge = this.querySelector('[data-testid="proofs-seal-badge"]');
+    if (sealBadge) {
+      applyStatusPillStyle(sealBadge, intact ? 'passed' : 'failed');
+      sealBadge.textContent = intact ? 'SEAL INTACT' : 'TAMPER DETECTED';
+    }
+
+    const rootEl = this.querySelector('[data-testid="proofs-seal-root"]');
+    if (rootEl) {
+      rootEl.textContent = integrity.rootSha256 || 'Not sealed';
+    }
+
+    const zonesEl = this.querySelector('[data-testid="proofs-seal-zones"]');
+    if (zonesEl) {
+      zonesEl.textContent = `${integrity.harnessFileCount} harness · ${integrity.testFileCount} tests`;
+    }
+
+    const floorsEl = this.querySelector('[data-testid="proofs-seal-floors"]');
+    if (floorsEl) {
+      const f = integrity.metricFloors;
+      floorsEl.textContent = `≥${f.minUnitTests}u · ≥${f.minPropertyTests}p · ≥${f.minE2ETests}e · ≤${f.maxSkippedTests} skip`;
+    }
+
+    const filesSummary = this.querySelector(
+      '[data-testid="proofs-locked-files-summary"]'
+    );
+    if (filesSummary) {
+      filesSummary.textContent = `SHA-256 Locked Verification Files (${integrity.lockedFiles.length})`;
+    }
+
+    const filesTbody = this.querySelector(
+      '[data-testid="proofs-locked-files-tbody"]'
+    );
+    if (filesTbody) {
+      const fileRows = integrity.lockedFiles.map((file) => {
+        const tr = document.createElement('tr');
+        const zoneTd = document.createElement('td');
+        zoneTd.className = 'py-2 pr-3 font-semibold uppercase';
+        zoneTd.textContent = file.zone;
+        const pathTd = document.createElement('td');
+        pathTd.className = 'py-2 pr-3 text-slate-700 dark:text-slate-200';
+        pathTd.textContent = file.path;
+        const hashTd = document.createElement('td');
+        hashTd.className = 'py-2 text-slate-500 dark:text-slate-400 break-all';
+        hashTd.textContent = file.sha256;
+        tr.append(zoneTd, pathTd, hashTd);
+        return tr;
+      });
+      filesTbody.replaceChildren(...fileRows);
+    }
+
+    const changelogBadge = this.querySelector(
+      '[data-testid="proofs-changelog-badge"]'
+    );
+    if (changelogBadge) {
+      applyStatusPillStyle(
+        changelogBadge,
+        integrity.changelogChainValid ? 'passed' : 'failed'
+      );
+      changelogBadge.textContent = integrity.changelogChainValid
+        ? `Chain Valid (${integrity.changelogEntries.length})`
+        : 'Chain Broken';
+    }
+
+    const changelogTbody = this.querySelector(
+      '[data-testid="proofs-changelog-tbody"]'
+    );
+    if (changelogTbody) {
+      const entries = [...integrity.changelogEntries].reverse();
+      if (entries.length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.setAttribute('colspan', '5');
+        td.className = 'py-3 text-slate-500 dark:text-slate-400';
+        td.textContent = 'No attested changelog entries recorded yet.';
+        tr.appendChild(td);
+        changelogTbody.replaceChildren(tr);
+      } else {
+        const rows = entries.map((entry) => {
+          const tr = document.createElement('tr');
+          const cells = [
+            { text: entry.commit, cls: 'py-2.5 pr-3 font-mono font-semibold' },
+            { text: entry.verdict, cls: 'py-2.5 pr-3 font-mono font-semibold' },
+            {
+              text: entry.summary,
+              cls: 'py-2.5 pr-3 text-slate-700 dark:text-slate-300',
+            },
+            {
+              text: `${entry.rootSha256.slice(0, 12)}…`,
+              cls: 'py-2.5 pr-3 font-mono text-slate-500 dark:text-slate-400',
+            },
+            {
+              text: `${entry.attestationSha256.slice(0, 12)}…`,
+              cls: 'py-2.5 font-mono text-slate-500 dark:text-slate-400',
+            },
+          ];
+          for (const cell of cells) {
+            const td = document.createElement('td');
+            td.className = cell.cls;
+            td.textContent = cell.text;
+            tr.appendChild(td);
+          }
+          return tr;
+        });
+        changelogTbody.replaceChildren(...rows);
+      }
+    }
   }
 
   private renderMediaGallery(state: ProofDashboardState): void {

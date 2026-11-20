@@ -140,6 +140,86 @@
       </div>
     </section>
 
+    <!-- Cryptographic Integrity Seal & Tamper Gate -->
+    <section data-testid="proofs-integrity-section" class="bg-[var(--boba-surface)] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h2 class="text-xl font-bold tracking-tight">Cryptographic Integrity Seal &amp; Tamper Gate</h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400">
+            SHA-256 lockfile (<code class="font-mono text-xs">proof-lock.json</code>) verified against <code class="font-mono text-xs">origin/main</code> on every PR so agents cannot modify existing tests, weaken harnesses, or regress metric floors.
+          </p>
+        </div>
+        <span
+          data-testid="proofs-seal-badge"
+          class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 shrink-0"
+        >
+          Checking seal…
+        </span>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 p-3.5 sm:col-span-2">
+          <p class="font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Root SHA-256 Seal</p>
+          <p data-testid="proofs-seal-root" class="font-mono text-[11px] sm:text-xs font-semibold break-all mt-1">—</p>
+        </div>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 p-3.5">
+          <p class="font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Locked Trust Zones</p>
+          <p data-testid="proofs-seal-zones" class="font-mono font-semibold mt-1">—</p>
+        </div>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-900/70 border border-slate-200/80 dark:border-slate-800 p-3.5">
+          <p class="font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Monotonic Floors</p>
+          <p data-testid="proofs-seal-floors" class="font-mono font-semibold mt-1">—</p>
+        </div>
+      </div>
+
+      <details class="rounded-xl border border-slate-200/80 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/50 p-4">
+        <summary data-testid="proofs-locked-files-summary" class="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer select-none">
+          SHA-256 Locked Verification Files
+        </summary>
+        <div class="overflow-x-auto mt-3">
+          <table class="w-full text-left text-xs font-mono border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                <th class="py-2 pr-3">Zone</th>
+                <th class="py-2 pr-3">File</th>
+                <th class="py-2">SHA-256</th>
+              </tr>
+            </thead>
+            <tbody data-testid="proofs-locked-files-tbody" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </details>
+
+      <!-- Hash-Chained Proof Attestation Changelog -->
+      <div class="pt-2">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            Hash-Chained Proof Attestation Changelog
+          </h3>
+          <span
+            data-testid="proofs-changelog-badge"
+            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+          >
+            —
+          </span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                <th class="py-2 pr-3">Commit</th>
+                <th class="py-2 pr-3">Verdict</th>
+                <th class="py-2 pr-3">Summary</th>
+                <th class="py-2 pr-3">Root SHA-256</th>
+                <th class="py-2">Chained Attestation</th>
+              </tr>
+            </thead>
+            <tbody data-testid="proofs-changelog-tbody" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
     <!-- Playwright Runtime & Visual Proofs Gallery -->
     <section data-testid="proofs-media-section" class="bg-[var(--boba-surface)] rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8">
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">

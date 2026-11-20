@@ -66,6 +66,15 @@ test('proof dashboard: loads 4-tier telemetry, filters tiers, and renders bounda
   await expect(page.locator(FeatureMap.proofs.heading)).toBeVisible();
   await expect(page.locator(FeatureMap.proofs.tierCard)).toHaveCount(4);
   await expect(page.locator(FeatureMap.proofs.archRows)).toHaveCount(6);
+  await expect(page.locator(FeatureMap.proofs.sealBadge)).toHaveText(
+    'SEAL INTACT'
+  );
+  await expect(page.locator(FeatureMap.proofs.sealRoot)).toHaveText(
+    /^[a-f0-9]{64}$/
+  );
+  await expect(page.locator(FeatureMap.proofs.changelogBadge)).toContainText(
+    'Chain Valid'
+  );
 
   await page.locator(FeatureMap.proofs.tierArchitecture).click();
   await expect(page.locator(FeatureMap.proofs.tierCard)).toHaveCount(1);
@@ -246,6 +255,7 @@ test.describe('offline caching', () => {
       'the service worker is only registered in production builds'
     );
     await page.goto(FeatureMap.home.route);
+    await expect(page.locator(FeatureMap.home.tierCard)).toHaveCount(4);
     await page.evaluate(() => navigator.serviceWorker.ready);
     await expect
       .poll(() =>

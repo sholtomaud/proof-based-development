@@ -20,8 +20,11 @@
     "test:properties": "node --test \"tests/properties/**/*.test.ts\"",
     "test": "npm run test:unit && npm run test:properties",
     "test:e2e": "playwright test",
+    "proof:check": "node scripts/proof-lock.ts && node scripts/proof-changelog.ts",
+    "proof:lock": "node scripts/proof-lock.ts --update --from-report public/data/proof-report.json",
+    "proof:attest": "node scripts/generate-proof-report.ts --append-changelog",
     "report": "node scripts/generate-proof-report.ts",
-    "verify:static": "npm run typecheck && npm run lint && npm run arch:check && npm run test:unit && npm run test:properties",
+    "verify:static": "npm run proof:check && npm run typecheck && npm run lint && npm run arch:check && npm run test:unit && npm run test:properties",
     "verify": "npm run verify:static && npm run test:e2e"
   },
   "devDependencies": {

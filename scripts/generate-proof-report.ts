@@ -7,6 +7,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { analyzeArchitecture } from './arch-check.ts';
 import { checkRules } from './check-rules.ts';
+import {
+  appendProofChangelogEntry,
+  loadAndVerifyProofChangelog,
+} from './proof-changelog.ts';
+import { loadLockfileFromDisk, verifyAgainstLock } from './proof-lock.ts';
 import { isRecord } from '../src/shared/contracts.ts';
 import type {
   ArchitectureReport,
@@ -14,6 +19,7 @@ import type {
   ProofBuildInfo,
   ProofCheckItem,
   ProofE2EMediaItem,
+  ProofIntegrityReport,
   ProofReport,
   ProofStatus,
   ProofTier,
@@ -366,10 +372,15 @@ export function renderMarkdownSummary(
   pagesUrl?: string
 ): string {
   const icon = report.overallStatus === 'passed' ? 'PASS' : 'FAIL';
+  const sealLabel =
+    report.integrity.status === 'intact' && report.integrity.changelogChainValid
+      ? `SEAL INTACT (\`${report.integrity.rootSha256.slice(0, 16)}…\`)`
+      : `TAMPERED (\`${report.integrity.rootSha256.slice(0, 16)}…\`)`;
   const lines: string[] = [
     `# Proof-Based Verification Report (${icon})`,
     '',
     `- **Commit:** \`${report.build.shortCommit}\` (\`${report.build.branch}\`)`,
+    `- **Cryptographic Proof Seal:** ${sealLabel} (${report.integrity.harnessFileCount} harness + ${report.integrity.testFileCount} test files locked)`,
     `- **Total Checks:** ${report.totalPassed} passed, ${report.totalFailed} failed, ${report.totalSkipped} skipped`,
     `- **Architecture:** ${report.architecture.totalModules} modules, ${report.architecture.totalEdges} edges, ${report.architecture.cycles} cycles, ${report.architecture.violations} boundary violations`,
   ];
@@ -694,6 +705,41 @@ export function generateProofReport(options: {
     playwrightReportUrl: options.playwrightReportUrl ?? '',
   };
 
+  const lockfile = loadLockfileFromDisk(root);
+  const changelog = loadAndVerifyProofChangelog(root);
+  let integrity: ProofIntegrityReport;
+  if (lockfile) {
+    const lockCheck = verifyAgainstLock(root, lockfile);
+    integrity = {
+      status: lockCheck.ok && changelog.valid ? 'intact' : 'tampered',
+      rootSha256: lockfile.rootSha256,
+      harnessFileCount: lockfile.files.filter((f) => f.zone === 'harness')
+        .length,
+      testFileCount: lockfile.files.filter((f) => f.zone === 'tests').length,
+      metricFloors: lockfile.metricFloors,
+      lockedFiles: lockfile.files,
+      changelogChainValid: changelog.valid,
+      changelogEntries: changelog.entries,
+    };
+  } else {
+    integrity = {
+      status: 'tampered',
+      rootSha256: '',
+      harnessFileCount: 0,
+      testFileCount: 0,
+      metricFloors: {
+        minUnitTests: 0,
+        minPropertyTests: 0,
+        minE2ETests: 0,
+        minArchRules: 0,
+        maxSkippedTests: 0,
+      },
+      lockedFiles: [],
+      changelogChainValid: changelog.valid,
+      changelogEntries: changelog.entries,
+    };
+  }
+
   return {
     schemaVersion: 1,
     overallStatus: totalFailed > 0 ? 'failed' : 'passed',
@@ -705,6 +751,7 @@ export function generateProofReport(options: {
     tiers,
     architecture: architectureReport,
     e2eMedia: pwSummary.media,
+    integrity,
   };
 }
 
@@ -733,12 +780,39 @@ if (import.meta.main) {
   const summaryFile = readArg(args, '--summary-file');
   const pagesUrl = readArg(args, '--pages-url');
 
-  const report = generateProofReport({
+  let report = generateProofReport({
     root,
     playwrightJsonPath,
     bundleMediaDir,
     playwrightReportUrl,
   });
+
+  if (args.includes('--append-changelog')) {
+    const summary = `${report.totalPassed} passed, ${report.totalFailed} failed, ${report.totalSkipped} skipped (${report.architecture.totalModules} modules, ${report.architecture.cycles} cycles)`;
+    const verdict =
+      report.overallStatus === 'passed' && report.integrity.status === 'intact'
+        ? 'SEAL_INTACT'
+        : 'FAILED';
+    const entry = appendProofChangelogEntry(root, {
+      commit: report.build.shortCommit,
+      timestamp: report.build.generatedAt,
+      rootSha256: report.integrity.rootSha256,
+      summary,
+      verdict,
+    });
+    console.log(
+      `Appended hash-chained attestation ${entry.attestationSha256.slice(0, 16)}… to PROOF_CHANGELOG.md.`
+    );
+    const updatedChangelog = loadAndVerifyProofChangelog(root);
+    report = {
+      ...report,
+      integrity: {
+        ...report.integrity,
+        changelogChainValid: updatedChangelog.valid,
+        changelogEntries: updatedChangelog.entries,
+      },
+    };
+  }
 
   fs.mkdirSync(path.dirname(outPath), { recursive: true });
   fs.writeFileSync(outPath, `${JSON.stringify(report, null, 2)}\n`);

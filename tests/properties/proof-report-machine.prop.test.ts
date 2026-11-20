@@ -134,6 +134,22 @@ function sampleReport(projects: readonly string[]): ProofReport {
       screenshotPath: `proof-media/${project}-${index}/screenshot.png`,
       tracePath: `proof-media/${project}-${index}/trace.zip`,
     })),
+    integrity: {
+      status: 'intact',
+      rootSha256: 'deadbeef01234567',
+      harnessFileCount: 10,
+      testFileCount: 14,
+      metricFloors: {
+        minUnitTests: 39,
+        minPropertyTests: 12,
+        minE2ETests: 31,
+        minArchRules: 10,
+        maxSkippedTests: 1,
+      },
+      lockedFiles: [],
+      changelogChainValid: true,
+      changelogEntries: [],
+    },
   };
 }
 

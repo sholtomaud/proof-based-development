@@ -1,0 +1,168 @@
+{
+  "schemaVersion": 1,
+  "rootSha256": "57a1f44020ded48fa0579f1965415fcc84ef397d95bc1c50ebca2a6519918bf4",
+  "metricFloors": {
+    "minUnitTests": 48,
+    "minPropertyTests": 12,
+    "minE2ETests": 31,
+    "minArchRules": 10,
+    "maxSkippedTests": 1
+  },
+  "files": [
+    {
+      "path": ".github/CODEOWNERS",
+      "zone": "harness",
+      "sha256": "d18d7381f34a4dc868ed78d58825bfc3cf641e3ae94537b8a5b88e41ce4e45dd"
+    },
+    {
+      "path": ".github/workflows/verify.yml",
+      "zone": "harness",
+      "sha256": "ce465dffd7a098df275cf282680da9b28a1ed5cdad116aad4341c74af9fb3fee"
+    },
+    {
+      "path": ".oxlintrc.json",
+      "zone": "harness",
+      "sha256": "78445f4604a8353819f4180c52e9a6fad760a10bc64068565d6801f3e115baa4"
+    },
+    {
+      "path": "e2e/app.spec.ts",
+      "zone": "tests",
+      "sha256": "62b016b6280ad3b081164b8eebdd176ffa33129408349bd71942d4495c489d21"
+    },
+    {
+      "path": "e2e/base-component.spec.ts",
+      "zone": "tests",
+      "sha256": "bd2637c1142d4f3db38ce81880ed4bf717d0bea802b2c2417ab363ad077a6333"
+    },
+    {
+      "path": "e2e/fixtures.ts",
+      "zone": "harness",
+      "sha256": "27d8c1adb99d9f6f44d4f455598112ff453d70e3a4cd9299cc0ad258daf9c3ed"
+    },
+    {
+      "path": "e2e/script-load.spec.ts",
+      "zone": "tests",
+      "sha256": "b1ee03ead341ee09872998edcf72ac513f05cbb72f8fef0d7fbc26c6a2bdd42e"
+    },
+    {
+      "path": "e2e/subpath.spec.ts",
+      "zone": "tests",
+      "sha256": "a7da8c43387320bb6fd95fdb7d80f2ab567ee753b093be66344c77828de4234a"
+    },
+    {
+      "path": "package.json#scripts",
+      "zone": "harness",
+      "sha256": "3c367e3cecf069eddc8dea18c77f17d72d611ac8bd125a9c3e9bf34e1990abd5"
+    },
+    {
+      "path": "playwright.config.js",
+      "zone": "harness",
+      "sha256": "57383180f0a7be4f7e0bd031035092b1160d90dcb73fb043eaab21d5134e6717"
+    },
+    {
+      "path": "scripts/arch-check.test.ts",
+      "zone": "tests",
+      "sha256": "f0a2603640c60a9e25d4b9a9e893e8d2c9bc9802c245dd5dea9e4c2d551c08a8"
+    },
+    {
+      "path": "scripts/arch-check.ts",
+      "zone": "harness",
+      "sha256": "c016c21190f6896735ec2880194297e6757d72174f1ec1b9f930b9890729525c"
+    },
+    {
+      "path": "scripts/boba.test.ts",
+      "zone": "tests",
+      "sha256": "9b13c75c7c944d18d8664efd2f3a9d77624e338a748a2777aaffe65730a7e639"
+    },
+    {
+      "path": "scripts/check-rules.test.ts",
+      "zone": "tests",
+      "sha256": "4d191077365cf1b5efcdfbbd62474d8dc526a5d9d73b0ae3ead6222b2ed695ee"
+    },
+    {
+      "path": "scripts/check-rules.ts",
+      "zone": "harness",
+      "sha256": "5edc80ddca0b802449e9a1d64b471ac26418edffef1081b3d922af6a0aab45e3"
+    },
+    {
+      "path": "scripts/generate-proof-report.test.ts",
+      "zone": "tests",
+      "sha256": "058a8103b2bdbd70104c867112e6247e2c8f3989d50e8e1821102afacc83ae01"
+    },
+    {
+      "path": "scripts/proof-changelog.test.ts",
+      "zone": "tests",
+      "sha256": "65d7d295ea05c8879ed56edb828b542c4d6454e2169f0251e235f76f0ba87be3"
+    },
+    {
+      "path": "scripts/proof-changelog.ts",
+      "zone": "harness",
+      "sha256": "d76ec32bcdc99a368b47e7697952fea3e264d10eb0ca9bacae1b4ff5e171e89e"
+    },
+    {
+      "path": "scripts/proof-lock.test.ts",
+      "zone": "tests",
+      "sha256": "3fb1f23732c71f95b5fbae747ef957868d51e0e815c9164e191afae2669d7b3d"
+    },
+    {
+      "path": "scripts/proof-lock.ts",
+      "zone": "harness",
+      "sha256": "3d4de28eb5e6b6307b0d72c6ad9bc911fc479ba46d44085199c987de63aab2b1"
+    },
+    {
+      "path": "src/core/router/router.test.ts",
+      "zone": "tests",
+      "sha256": "d82a5bb7b5f531df0dfdceceb6bd356eaf0359c5a806e7366d92a38ae5641cc8"
+    },
+    {
+      "path": "src/core/store.test.ts",
+      "zone": "tests",
+      "sha256": "4599c5b341cfed9a048070a873c971d9637c8afb9eb85928a735ea6d6cb58686"
+    },
+    {
+      "path": "src/services/proof-report-service.test.ts",
+      "zone": "tests",
+      "sha256": "6d58408ce81fac7644cc929dd08e5f0d2982ebe895915f61673ace54b5074c42"
+    },
+    {
+      "path": "src/services/user-service.test.ts",
+      "zone": "tests",
+      "sha256": "9a4b0c83d150599cf11cc85ba666ecc7c1629f2c3b0cef5231418bce658c984c"
+    },
+    {
+      "path": "tests/feature-map.ts",
+      "zone": "tests",
+      "sha256": "b4490ec614b443f22f1726219a4113268cd955606aade624cd1766776050eb61"
+    },
+    {
+      "path": "tests/lib/property.test.ts",
+      "zone": "tests",
+      "sha256": "c100b8e3e7aed7da503599b85f6e789a39cdfc2bd1d2e0f6d7aee1d7c639f01a"
+    },
+    {
+      "path": "tests/lib/property.ts",
+      "zone": "harness",
+      "sha256": "dd6a961c4b51f0f1fee3ed7d5474dd77f748126f5c8f8be416fe1ac7e01de753"
+    },
+    {
+      "path": "tests/properties/proof-report-machine.prop.test.ts",
+      "zone": "tests",
+      "sha256": "f2dc211f1900d7b6384b9fc5c269ee81164da76e4687b0922804a8a9cb8de698"
+    },
+    {
+      "path": "tests/properties/todo-machine.prop.test.ts",
+      "zone": "tests",
+      "sha256": "f3ca7e607b9a6e74f21422b147d1d78dc45868585ed1fcfb95c44c169f7fd8df"
+    },
+    {
+      "path": "tests/properties/user-machine.prop.test.ts",
+      "zone": "tests",
+      "sha256": "604783dc50b997a371c4f1865dad2fca87635d94aaac2dd9e9a25c7a667e7d00"
+    },
+    {
+      "path": "tsconfig.json",
+      "zone": "harness",
+      "sha256": "5c3bea790526db16e0b44c00b1c6475340d9a738e226347ab2c7997621bdbba9"
+    }
+  ]
+}

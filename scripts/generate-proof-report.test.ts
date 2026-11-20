@@ -118,6 +118,22 @@ describe('generate-proof-report helpers', () => {
         rules: [],
       },
       e2eMedia: [],
+      integrity: {
+        status: 'intact',
+        rootSha256: 'deadbeef0123456789abcdef',
+        harnessFileCount: 10,
+        testFileCount: 14,
+        metricFloors: {
+          minUnitTests: 39,
+          minPropertyTests: 12,
+          minE2ETests: 31,
+          minArchRules: 10,
+          maxSkippedTests: 1,
+        },
+        lockedFiles: [],
+        changelogChainValid: true,
+        changelogEntries: [],
+      },
     };
 
     const md = renderMarkdownSummary(
@@ -125,6 +141,7 @@ describe('generate-proof-report helpers', () => {
       'https://sholtomaud.github.io/proof-based-development/'
     );
     assert.match(md, /Proof-Based Verification Report \(PASS\)/);
+    assert.match(md, /SEAL INTACT/);
     assert.match(md, /abcdef1/);
     assert.match(
       md,

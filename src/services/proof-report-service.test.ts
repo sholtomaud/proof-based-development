@@ -34,6 +34,22 @@ const validReport: ProofReport = {
     rules: [],
   },
   e2eMedia: [],
+  integrity: {
+    status: 'intact',
+    rootSha256: 'deadbeef',
+    harnessFileCount: 10,
+    testFileCount: 12,
+    metricFloors: {
+      minUnitTests: 10,
+      minPropertyTests: 4,
+      minE2ETests: 5,
+      minArchRules: 8,
+      maxSkippedTests: 1,
+    },
+    lockedFiles: [],
+    changelogChainValid: true,
+    changelogEntries: [],
+  },
 };
 
 describe('proof-report-service', () => {

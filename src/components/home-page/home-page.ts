@@ -35,7 +35,12 @@ export class HomeComponent extends BaseComponent {
 
     const meta = this.querySelector('[data-testid="home-proof-meta"]');
     if (meta) {
-      meta.textContent = `${report.build.branch} @ ${report.build.shortCommit} · ${report.architecture.totalModules} modules · ${report.architecture.cycles} cycles`;
+      const seal =
+        report.integrity.status === 'intact' &&
+        report.integrity.changelogChainValid
+          ? `seal ${report.integrity.rootSha256.slice(0, 10)}`
+          : 'seal TAMPERED';
+      meta.textContent = `${report.build.branch} @ ${report.build.shortCommit} · ${seal} · ${report.architecture.totalModules} modules · ${report.architecture.cycles} cycles`;
     }
 
     const pwLink = this.querySelector(
